@@ -40,7 +40,9 @@ export default function AddTouristicPlace() {
     transport: [],
     nom: "",
     description: "",
-    wilaya: "",
+    wilaya: {
+      nom: "",
+    },
     adresse: "",
     latitude: 0.0,
     longitude: 0.0,
@@ -230,13 +232,13 @@ export default function AddTouristicPlace() {
                         fullWidth
                         labelId="demo-customized-select-label"
                         id="demo-customized-select"
-                        value={lieu.wilaya}
+                        value={lieu.wilaya.nom}
                         onChange={(e) => {
                           // setData({...data , [data.wilaya]  : e.target.value} ) ;
                           // console.log("nom de place :" + e.target.value) ;
                           setLieu((prv) => ({
                             ...prv,
-                            wilaya: e.target.value,
+                            wilaya: { nom: e.target.value },
                           }));
                         }}
                       >

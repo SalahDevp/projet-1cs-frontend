@@ -41,14 +41,14 @@ export default function Landing(){
 
 
     return (
-        <div className="w-screen h-screen overflow-x-hidden bg-yellow-200 ">
-        <div className="  h-screen w-screen  bg-cover bg-center bg-[url('./images/pic8.png')] m-0 overflow-x-hidden">
-            <div className="flex justify-between p-4">
+        <div className="w-screen h-screen overflow-x-hidden bg-yellow-200 scroll-smooth ">
+        <div id="home" className="  h-screen w-screen  bg-cover bg-center bg-[url('./images/pic8.png')] m-0 overflow-x-hidden">
+            <div className="flex justify-between p-4 ">
                 <img src={logo} className="w-24 h-24 hover:hue-rotate-180 "></img>
                 <ul className="flex text-2xl font-semibold text-white  w-1/2 justify-around items-center ">
-                    <li className="hover:underline underline-offset-8 hover:text-blue-950"> <a href="#" className="focus:underline"> Home</a> </li>
-                    <li className="hover:underline underline-offset-8 hover:text-blue-950"> <a href="#" className="focus:underline"> About Us</a> </li>
-                    <li className="hover:underline underline-offset-8 hover:text-blue-950    "> <a href="#" className="focus:underline"> Contact</a> </li>
+                    <li className="hover:underline underline-offset-8 hover:text-blue-950"> <a href="#home" className="focus:underline"> Home</a> </li>
+                    <li className="hover:underline underline-offset-8 hover:text-blue-950"> <a href="#aboutUs" className="focus:underline"> About Us</a> </li>
+                    <li className="hover:underline underline-offset-8 hover:text-blue-950    "> <a href="#contactUs" className="focus:underline"> Contact</a> </li>
                 </ul>
                 <div></div>
             </div>
@@ -72,7 +72,7 @@ export default function Landing(){
             </div>
             </div>     
         </div>
-        <div className="   flex justify-center  -middle  pt-44">
+        <div id="aboutUs" className="   flex justify-center  -middle  pt-44">
         {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#0099ff" fill-opacity="1" d="M0,64L60,53.3C120,43,240,21,360,16C480,11,600,21,720,42.7C840,64,960,96,1080,96C1200,96,1320,64,1380,48L1440,32L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path></svg> */}
         
             <div className="w-2/5  text-2xl tracking-wide text-blue-900">
@@ -95,7 +95,7 @@ export default function Landing(){
         
         
         </svg> */}
-        <div className="w-full h-96 bg-blue-900 z-50 text-white text-2xl ">
+        <div id="contactUs" className="w-full h-96 bg-black z-50 text-white text-2xl ">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#FEF08A" fill-opacity="1" d="M0,32L40,48C80,64,160,96,240,122.7C320,149,400,171,480,165.3C560,160,640,128,720,122.7C800,117,880,139,960,122.7C1040,107,1120,53,1200,53.3C1280,53,1360,107,1400,133.3L1440,160L1440,0L1400,0C1360,0,1280,0,1200,0C1120,0,1040,0,960,0C880,0,800,0,720,0C640,0,560,0,480,0C400,0,320,0,240,0C160,0,80,0,40,0L0,0Z"></path></svg>
             <div className="flex justify-around -mt-28"> 
                 <div>
