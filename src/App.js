@@ -13,6 +13,7 @@ import AddTouristicPlace from "./AddTouristicPlace";
 // import EditTouristicPlace from "./EditTouristicPlace";
 import { useEffect, useState } from "react";
 import Test from "./test";
+import InfoPage from "./InfoPage";
 // import EventsAndActivities from "./EventsAndActivities";
 // import LocalAdministrator from "./LocalAdministarators";
 // import AddLocalAdministrator from "./AddLocalAdministrator";
@@ -28,6 +29,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/infopage" element={<InfoPage/>} />
       <Route path="/intro" element={<Intro />}></Route>
       {/* <Route path="/addeve" element={<AddEvent />}></Route> */}
       <Route path="/map" element={<Map />}></Route>
