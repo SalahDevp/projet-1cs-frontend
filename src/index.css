@@ -53,3 +53,8 @@ code {
   height: 480px;
   width: 380px;
 }
+.leaflet-control-container{
+  position: fixed;
+  bottom: 100px;
+  z-index: 500;
+}

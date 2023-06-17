@@ -9,6 +9,7 @@ import {
 import L from "leaflet";
 import pic from "./pic/pic8.png";
 import NavbarMap from "./NavbarMap";
+import position from "./pic/gps.png";
 
 const marker = new L.icon({
   iconUrl: require("./pic/marker2.png"),
@@ -20,15 +21,7 @@ const here = new L.icon({
 });
 function LocationMarker() {
   const [position, setPosition] = useState(null);
-  const map = useMapEvents({
-    click() {
-      map.locate();
-    },
-    locationfound(e) {
-      setPosition(e.latlng);
-      map.flyTo(e.latlng, map.getZoom());
-    },
-  });
+  
 
   return position === null ? null : (
     <Marker position={position} icon={here}>
@@ -59,8 +52,21 @@ function LocationMarker() {
   );
 }
 function Map() {
-  const [center, useCenter] = useState({ lat: 33.7, lng: 3.042 });
+  const [center, setCenter] = useState({ lat: 33.7, lng: 3.042 });
   const Zoom_lvl = 6;
+  
+  const handleLocateClick = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setCenter({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      });
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  };
   return (
     <div class="relative h-full w-full">
       <NavbarMap />
@@ -87,8 +93,23 @@ function Map() {
 
         <LocationMarker />
       </MapContainer>
+      <button 
+        class='fixed bottom-[88px] left-[10px] bg-white p-1 border border-black'
+        onClick={handleLocateClick}
+      >
+        <img src={position} alt="position" class="w-6 h-6"/>
+      </button>
     </div>
   );
 }
 
 export default Map;
+/**const map = useMapEvents({
+    click() {
+      map.locate();
+    },
+    locationfound(e) {
+      setPosition(e.latlng);
+      map.flyTo(e.latlng, map.getZoom());
+    },
+  }); */

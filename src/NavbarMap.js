@@ -60,6 +60,19 @@ function NavbarMap() {
       handleSearch();
     }
   };
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedTheme, setSelectedTheme] = useState(null);
+  const [selectedWilaya, setSelectedWilaya] = useState(null);
+
+  const handleButtonClickCat = (cat) => {
+    setSelectedCategory(cat);
+  };
+  const handleButtonClickTh = (cat) => {
+    setSelectedTheme(cat);
+  };
+  const handleButtonClickWi = (cat) => {
+    setSelectedWilaya(cat);
+  };
   return (
     <div class='absolute top-5 left-0 right-0 z-50 bg-[#05BFDB] w-[1322px] h-20 mx-auto rounded-3xl shadow-md hover:shadow-lg border border-[#0A4D68] flex items-center justify-between px-4'>
         <div class="flex items-center justify-between w-full px-3 py-3 mx-auto max-w-8xl lg:px-4">
@@ -100,9 +113,9 @@ function NavbarMap() {
                                             key={cat}
                                             onClick={(event) => {
                                                 event.stopPropagation();
-                                                // handle button click
+                                                handleButtonClickCat(cat);
                                             }}
-                                            className="h-12 relative w-[230px] bg-[#F5F3C1] text-[#0A4D68] font-fredoka font-normal text-xl px-4 py-2 rounded-lg focus:outline-none"
+                                            className={`h-12 relative w-[230px] bg-[#F5F3C1] text-[#0A4D68] font-fredoka font-normal text-xl px-4 py-2 rounded-lg focus:outline-none ${selectedCategory === cat ? 'opacity-100' : 'opacity-70 hover:opacity-100'}`}
                                         >
                                             {cat}
                                         </button>
@@ -125,9 +138,9 @@ function NavbarMap() {
                                             key={cat}
                                             onClick={(event) => {
                                                 event.stopPropagation();
-                                                // handle button click
+                                                handleButtonClickTh(cat);
                                             }}
-                                            className="h-12 relative w-[230px] bg-[#F5F3C1] text-[#0A4D68] font-fredoka font-normal text-xl px-4 py-2 rounded-lg focus:outline-none"
+                                            className={`h-12 relative w-[230px] bg-[#F5F3C1] text-[#0A4D68] opacity-70 hover:opacity-100 font-fredoka font-normal text-xl px-4 py-2 rounded-lg focus:outline-none ${selectedTheme === cat ? 'opacity-100' : 'opacity-70 hover:opacity-100'}`}
                                         >
                                             {cat}
                                         </button>
@@ -150,9 +163,9 @@ function NavbarMap() {
                                             key={cat}
                                             onClick={(event) => {
                                                 event.stopPropagation();
-                                                // handle button click
+                                                handleButtonClickWi(cat);
                                             }}
-                                            className="h-12 relative w-[230px] flex items-center bg-[#F5F3C1] text-[#0A4D68] font-fredoka font-normal text-xl px-4 py-2 rounded-lg focus:outline-none"
+                                            className={`h-12 relative w-[230px] flex items-center bg-[#F5F3C1] text-[#0A4D68] opacity-70 hover:opacity-100 font-fredoka font-normal text-xl px-4 py-2 rounded-lg focus:outline-none ${selectedWilaya === cat ? 'opacity-100' : 'opacity-70 hover:opacity-100'}`}
                                         >
                                             {cat}
                                             <img src={images[index]} alt="Image" class="w-7 h-5 mt-3 ml-auto"/>
