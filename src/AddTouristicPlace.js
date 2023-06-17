@@ -22,9 +22,12 @@ import { infoUser } from "./Intro";
 import wilayas from "./utils/wilayas.json";
 import communes from "./communes";
 import { FormGroup, Checkbox, FormControlLabel } from "@mui/material";
-import { createPI } from "./utils/axios/pointInteret";
+import { createPI, getPIById, updatePI } from "./utils/axios/pointInteret";
+import { useSearchParams } from "react-router-dom";
 
 export default function AddTouristicPlace() {
+  //NOTE: when editing query params => editMode=true&id=lieu_id
+
   const [lieu, setLieu] = useState({
     categorie: {
       nom: "",
@@ -69,6 +72,8 @@ export default function AddTouristicPlace() {
 
   // var decoded = jwt_decode(credentialResponse.credential);
   const storedData = {};
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [images, setImages] = useState([]);
   const [center, setCenter] = useState([15, 30]);
   const [position, setPosition] = useState([36.7, 3.18]);
@@ -89,6 +94,18 @@ export default function AddTouristicPlace() {
       }));
     }
   };
+
+  useEffect(() => {
+    const editModeParam = searchParams.get("editMode");
+    const lieuID = searchParams.get("id");
+    // Set the value of isEditMode based on the query parameter
+    if (editModeParam === "true") {
+      setIsEditMode(true);
+      getPIById(lieuID).then((lieu) => setLieu(lieu));
+    } else {
+      setIsEditMode(false);
+    }
+  }, [searchParams]);
 
   return (
     <div className="h-screen overflow-y-scroll bg-fixed bg-cover bg-center bg-[url('./images/Pic11.png')] text-xl">
@@ -441,7 +458,9 @@ export default function AddTouristicPlace() {
             onClick={async () => {
               try {
                 console.log(images);
-                const res = await createPI(lieu, images);
+                const res = await (!isEditMode
+                  ? createPI(lieu, images)
+                  : updatePI(searchParams.get("id"), lieu, images));
                 console.log(res);
               } catch (e) {
                 console.error(e);
