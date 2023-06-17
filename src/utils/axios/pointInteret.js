@@ -26,11 +26,9 @@ export async function getAllPI(categorie, wilaya, theme, search) {
   return res.data;
 }
 
-export async function createPI(pointInteret) {
+export async function createPI(pointInteret, photos = []) {
   const tokenStr = "Token " + localStorage.getItem("token");
-  const photos = pointInteret.photos ? [...pointInteret.photos] : [];
 
-  delete pointInteret.photos;
   //create pointInteret
   const res = await axios.post(
     config.serverUrl + "/api/point-interet",
@@ -42,12 +40,38 @@ export async function createPI(pointInteret) {
   //add images
   for (let photo of photos) {
     const formData = new FormData();
-    formData.append("image", photo);
+    formData.append("photo", photo);
     await axios.post(config.serverUrl + "/api/image/" + res.data.id, formData, {
       headers: { Authorization: tokenStr },
     });
   }
 
+  return res.data;
+}
+
+export async function updatePI(id, pointInteret, photos = []) {
+  const tokenStr = "Token " + localStorage.getItem("token");
+
+  delete pointInteret.photos;
+  delete pointInteret.evenements;
+  delete pointInteret.commentaires;
+
+  const res = await axios.put(
+    config.serverUrl + `/api/point-interet/${id}`,
+    pointInteret,
+    {
+      headers: { Authorization: tokenStr },
+    }
+  );
+
+  //add images
+  for (let photo of photos) {
+    const formData = new FormData();
+    formData.append("photo", photo);
+    await axios.post(config.serverUrl + "/api/image/" + res.data.id, formData, {
+      headers: { Authorization: tokenStr },
+    });
+  }
   return res.data;
 }
 

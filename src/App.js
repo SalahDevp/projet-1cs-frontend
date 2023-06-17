@@ -8,7 +8,7 @@ import Map from "./Map";
 import Landing from "./Landing";
 import SideBar from "./SideBar";
 // import NewEvent from "./NewEvent";
-// import AddEvent from "./AddEvent";
+import AddEvent from "./AddEvent";
 import AddTouristicPlace from "./AddTouristicPlace";
 // import EditTouristicPlace from "./EditTouristicPlace";
 import { useEffect, useState } from "react";
@@ -31,7 +31,7 @@ function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/infopage" element={<InfoPage/>} />
       <Route path="/intro" element={<Intro />}></Route>
-      {/* <Route path="/addeve" element={<AddEvent />}></Route> */}
+      <Route path="/addeve" element={<AddEvent />}></Route>
       <Route path="/map" element={<Map />}></Route>
       <Route path="/addplace" element={<AddTouristicPlace />}></Route>
       {/* <Route path="/editplace" element={<EditTouristicPlace />}></Route> */}

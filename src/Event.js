@@ -9,11 +9,11 @@ export default function Event({evenement }) {
     const [afficher , setAfficher] = useState(false) ; 
    const path = './images/Pic1.png' ; 
     return(
-        <div className="w-96  rounded-2xl py-6 m-4 bg-white shadow-md shadow-slate-600 ">
+        <div className=" w-96 rounded-2xl py-2 m-4 bg-white shadow-md shadow-slate-600 ">
               {afficher &&(<EventMap coords={evenement.coords} ></EventMap>) }  
                     <div>
-                    <img src={evenement.url} className=" ml-6 w-96 h-52 inline-block" />
-                    <div className="ml-6">
+                    <img src={evenement.url} className=" ml-8 w-96 h-52 inline-block" />
+                    <div className="ml-8">
                     <h1 className="text-xl font-semibold text-blue-700">{evenement.name}</h1>
                         <p className="text-md text-black font-semibold">{evenement.description} </p>
                         <p className="text-lg text-green-500 font-semibold"><span>{evenement.wilaya}</span> - <pan> { evenement.place }</pan></p>

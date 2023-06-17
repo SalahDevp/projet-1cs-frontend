@@ -7,7 +7,7 @@ import maison from "./pic/pic8.png";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import pic from "./pic/pic8.png"
+import pic from "./pic/pic8.png";
 
 // import required modules
 import { Autoplay, Pagination, Navigation } from "swiper";
@@ -42,7 +42,7 @@ export default function SliderComponent({ images }) {
             <SwiperSlide key={img}>
               <img
                 //src={config.serverUrl + img}
-                src={pic}
+                src={config.serverUrl + img.photo}
                 className="object-fill h-96 w-full"
                 alt=""
               />

@@ -22,26 +22,33 @@ import { infoUser } from "./Intro";
 import wilayas from "./utils/wilayas.json";
 import communes from "./communes";
 import { FormGroup, Checkbox, FormControlLabel } from "@mui/material";
+import { createPI, getPIById, updatePI } from "./utils/axios/pointInteret";
+import { useSearchParams } from "react-router-dom";
 
 export default function AddTouristicPlace() {
-  let data02 = {
-    placeName: "",
-    category: "",
-    theme: "",
-    wilaya: "",
+  //NOTE: when editing query params => editMode=true&id=lieu_id
+
+  const [lieu, setLieu] = useState({
+    categorie: {
+      nom: "",
+    },
+    theme: [
+      {
+        nom: "",
+      },
+    ],
+    transport: [],
+    nom: "",
+    description: "",
+    wilaya: {
+      nom: "",
+    },
     adresse: "",
-    open: "",
-    close: "",
-    history: "",
-    coords: [],
-    images: [],
-    voiture: false,
-    train: false,
-    bus: false,
-    telepherique: false,
-    metro: false,
-    trame: false,
-  };
+    latitude: 0.0,
+    longitude: 0.0,
+    heur_ouverture: "",
+    heur_fermeture: "",
+  });
 
   const customIcon = new Icon({
     //iconUrl:"https://www.flaticon.com/free-icon/location_1483336?term=marker&page=1&position=9&origin=search&related_id=1483336"  ,
@@ -53,8 +60,7 @@ export default function AddTouristicPlace() {
     const { lat, lng } = e.latlng;
     setMarkerPosition([lat, lng]);
     // setData({...data , [data.coords] : [lat ,lng ]}) ;
-    data02.coords = [lat, lng];
-    console.log(data02);
+    setLieu((prv) => ({ ...prv, latitude: lat, longitude: lng }));
 
     console.log(`Coordonnées: Latitude ${lat}, Longitude ${lng}`);
   }
@@ -67,10 +73,41 @@ export default function AddTouristicPlace() {
   }
 
   // var decoded = jwt_decode(credentialResponse.credential);
-  const storedData = JSON.parse(sessionStorage.getItem("myData")) || {};
+  const storedData = {};
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [images, setImages] = useState([]);
   const [center, setCenter] = useState([15, 30]);
   const [position, setPosition] = useState([36.7, 3.18]);
+
+  const handleCheckboxChange = (event) => {
+    const { value, checked } = event.target;
+
+    // Update the transportations array based on checkbox state
+    if (checked) {
+      setLieu((prevLieu) => ({
+        ...prevLieu,
+        transport: [...prevLieu.transport, { nom: value }],
+      }));
+    } else {
+      setLieu((prevLieu) => ({
+        ...prevLieu,
+        transport: prevLieu.transport.filter((transp) => transp.nom !== value),
+      }));
+    }
+  };
+
+  useEffect(() => {
+    const editModeParam = searchParams.get("editMode");
+    const lieuID = searchParams.get("id");
+    // Set the value of isEditMode based on the query parameter
+    if (editModeParam === "true") {
+      setIsEditMode(true);
+      getPIById(lieuID).then((lieu) => setLieu(lieu));
+    } else {
+      setIsEditMode(false);
+    }
+  }, [searchParams]);
 
   return (
     <div className="h-screen overflow-y-scroll bg-fixed bg-cover bg-center bg-[url('./images/Pic11.png')] text-xl">
@@ -112,19 +149,18 @@ export default function AddTouristicPlace() {
             <div className="grid grid-cols-1 gap-y-6 ">
               <div>
                 {" "}
-                <label htmlFor="outlined-required">Nom du place * </label>
+                <label htmlFor="outlined-required">Nom * </label>
                 <div className="mb-4">
                   <TextField
                     required
                     fullWidth
                     id="outlined-required"
                     label=""
-                    // value={data.placeName }
+                    value={lieu.nom}
                     onChange={(e) => {
                       // setData({...data , [data.placeName]  : e.target.value} ) ;
                       // console.log("nom de place :" + e.target.value) ;
-                      data02.placeName = e.target.value;
-                      console.log(data02);
+                      setLieu((prv) => ({ ...prv, nom: e.target.value }));
                     }}
                   />
                 </div>
@@ -139,16 +175,28 @@ export default function AddTouristicPlace() {
                       fullWidth
                       labelId="demo-customized-select-label"
                       id="demo-customized-select"
+                      value={lieu.categorie.nom}
                       onChange={(e) => {
                         // setData({...data , [data.category]  : e.target.value} ) ;
                         // console.log("nom de place :" + e.target.value) ;
-                        data02.category = e.target.value;
-                        console.log(data02);
+                        setLieu((prv) => ({
+                          ...prv,
+                          categorie: { nom: e.target.value },
+                        }));
                       }}
                     >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
+                      <MenuItem value="musé">musé</MenuItem>
+                      <MenuItem value="plage">plage</MenuItem>
+                      <MenuItem value="forét">forét</MenuItem>
+                      <MenuItem value="ville">ville</MenuItem>
+                      <MenuItem value="montagne">montagne</MenuItem>
+                      <MenuItem value="campagne">campagne</MenuItem>
+                      <MenuItem value="lac">lac</MenuItem>
+                      <MenuItem value="rivière">rivière</MenuItem>
+                      <MenuItem value="désert">désert</MenuItem>
+                      <MenuItem value="grotte">grotte</MenuItem>
+                      <MenuItem value="falaise">falaise</MenuItem>
+                      <MenuItem value="chute d'eau">chute d'eau</MenuItem>
                     </Select>
                   </div>
 
@@ -159,16 +207,19 @@ export default function AddTouristicPlace() {
                       fullWidth
                       labelId="demo-customized-select-label"
                       id="demo-customized-select"
+                      value={lieu.theme[0].nom}
                       onChange={(e) => {
                         // setData({...data , [data.theme]  : e.target.value} ) ;
                         // console.log("nom de place :" + e.target.value) ;
-                        data02.theme = e.target.value;
-                        console.log(data02);
+                        setLieu((prv) => ({
+                          ...prv,
+                          theme: [{ nom: e.target.value }],
+                        }));
                       }}
                     >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
+                      <MenuItem value={"ten"}>Ten</MenuItem>
+                      <MenuItem value={"twenty"}>Twenty</MenuItem>
+                      <MenuItem value={"Thirty"}>Thirty</MenuItem>
                     </Select>
                   </div>
                 </div>
@@ -181,11 +232,14 @@ export default function AddTouristicPlace() {
                         fullWidth
                         labelId="demo-customized-select-label"
                         id="demo-customized-select"
+                        value={lieu.wilaya.nom}
                         onChange={(e) => {
                           // setData({...data , [data.wilaya]  : e.target.value} ) ;
                           // console.log("nom de place :" + e.target.value) ;
-                          data02.wilaya = e.target.value;
-                          console.log(data02);
+                          setLieu((prv) => ({
+                            ...prv,
+                            wilaya: { nom: e.target.value },
+                          }));
                         }}
                       >
                         {wilayas.map((elem) => {
@@ -200,12 +254,15 @@ export default function AddTouristicPlace() {
                         fullWidth
                         id="outlined-required"
                         label=""
+                        value={lieu.adresse}
                         // value={data.placeName }
                         onChange={(e) => {
                           // setData({...data , [data.placeName]  : e.target.value} ) ;
                           // console.log("nom de place :" + e.target.value) ;
-                          data02.adresse = e.target.value;
-                          console.log(data02);
+                          setLieu((prv) => ({
+                            ...prv,
+                            adresse: e.target.value,
+                          }));
                         }}
                       />
                     </div>
@@ -216,36 +273,43 @@ export default function AddTouristicPlace() {
                 <h1> Horaire*</h1>
                 <div className="grid grid-cols-2 gap-x-10 ">
                   <div>
-                    <h1 className="text-sm"> Ouverte</h1>
+                    <h1 className="text-sm"> Ouverture*</h1>
                     <TextField
                       required
                       id="outlined-number"
                       label=""
                       type="time"
                       fullWidth
+                      value={lieu.heur_ouverture}
                       placeholder="Open"
                       onChange={(e) => {
                         // setData({...data , [data.open]  : e.target.value} ) ;
                         // console.log("nom de place :" + e.target.value) ;
-                        data02.open = e.target.value;
-                        console.log(data02);
+                        setLieu((prv) => ({
+                          ...prv,
+                          heur_ouverture: e.target.value,
+                        }));
                       }}
                     />
                   </div>
                   <div>
-                    <h1 className="text-sm"> Fermée*</h1>
+                    <h1 className="text-sm"> Fermeture*</h1>
                     <TextField
                       required
                       id="outlined-number"
                       label=""
+                      ampm={false}
                       type="time"
                       fullWidth
                       placeholder="Closed"
+                      value={lieu.heur_fermeture}
                       onChange={(e) => {
                         // setData({...data , [data.close]  : e.target.value} ) ;
                         // console.log("nom de place :" + e.target.value) ;
-                        data02.close = e.target.value;
-                        console.log(data02);
+                        setLieu((prv) => ({
+                          ...prv,
+                          heur_fermeture: e.target.value,
+                        }));
                       }}
                     />
                   </div>
@@ -261,10 +325,12 @@ export default function AddTouristicPlace() {
                         <FormControlLabel
                           control={
                             <Checkbox
-                              onChange={(e) => {
-                                data02.voiture = !data02.voiture;
-                                console.log(data02);
-                              }}
+                              value="Voiture"
+                              checked={lieu.transport.some(
+                                (transportation) =>
+                                  transportation.nom === "Voiture"
+                              )}
+                              onChange={handleCheckboxChange}
                             />
                           }
                           label="Voiture"
@@ -272,10 +338,12 @@ export default function AddTouristicPlace() {
                         <FormControlLabel
                           control={
                             <Checkbox
-                              onChange={(e) => {
-                                data02.train = !data02.train;
-                                console.log(data02);
-                              }}
+                              value="Train"
+                              checked={lieu.transport.some(
+                                (transportation) =>
+                                  transportation.nom === "Train"
+                              )}
+                              onChange={handleCheckboxChange}
                             />
                           }
                           label="Train"
@@ -283,23 +351,26 @@ export default function AddTouristicPlace() {
                         <FormControlLabel
                           control={
                             <Checkbox
-                              onChange={(e) => {
-                                data02.bus = !data02.bus;
-                                console.log(data02);
-                              }}
+                              value="Bus"
+                              checked={lieu.transport.some(
+                                (transportation) => transportation.nom === "Bus"
+                              )}
+                              onChange={handleCheckboxChange}
                             />
                           }
-                          label="bus"
+                          label="Bus"
                         />
                       </div>
                       <div className="flex flex-col w-1/2 pl-6">
                         <FormControlLabel
                           control={
                             <Checkbox
-                              onChange={(e) => {
-                                data02.metro = !data02.metro;
-                                console.log(data02);
-                              }}
+                              value="Metro"
+                              checked={lieu.transport.some(
+                                (transportation) =>
+                                  transportation.nom === "Metro"
+                              )}
+                              onChange={handleCheckboxChange}
                             />
                           }
                           label="Metro"
@@ -307,10 +378,12 @@ export default function AddTouristicPlace() {
                         <FormControlLabel
                           control={
                             <Checkbox
-                              onChange={(e) => {
-                                data02.trame = !data02.trame;
-                                console.log(data02);
-                              }}
+                              value="Trame"
+                              checked={lieu.transport.some(
+                                (transportation) =>
+                                  transportation.nom === "Trame"
+                              )}
+                              onChange={handleCheckboxChange}
                             />
                           }
                           label="Trame"
@@ -318,10 +391,12 @@ export default function AddTouristicPlace() {
                         <FormControlLabel
                           control={
                             <Checkbox
-                              onChange={(e) => {
-                                data02.telepherique = !data02.telepherique;
-                                console.log(data02);
-                              }}
+                              value="Téléphérique"
+                              checked={lieu.transport.some(
+                                (transportation) =>
+                                  transportation.nom === "Téléphérique"
+                              )}
+                              onChange={handleCheckboxChange}
                             />
                           }
                           label="Téléphérique"
@@ -333,7 +408,7 @@ export default function AddTouristicPlace() {
               </div>
 
               <div>
-                <label htmlFor="outlined-multiline-static">Histoire* </label>
+                <label htmlFor="outlined-multiline-static">Description* </label>
                 <TextField
                   required
                   fullWidth
@@ -341,11 +416,14 @@ export default function AddTouristicPlace() {
                   label=""
                   multiline
                   rows={4}
+                  value={lieu.description}
                   onChange={(e) => {
                     // setData({...data , [data.history]  : e.target.value} ) ;
                     // console.log("nom de place :" + e.target.value) ;
-                    data02.history = e.target.value;
-                    console.log(data02);
+                    setLieu((prv) => ({
+                      ...prv,
+                      description: e.target.value,
+                    }));
                   }}
                 />
               </div>
@@ -377,10 +455,26 @@ export default function AddTouristicPlace() {
           </div>
         </div>
         <div className="flex justify-around">
-          <div className="border rounded-3xl px-8  my-8 py-3 text-white bg-blue-800 inline-block  text-center font-semibold text-xl hover:scale-110">
+          <div
+            className="border rounded-3xl px-8  my-8 py-3 text-white bg-blue-800 inline-block  text-center font-semibold text-xl hover:scale-110"
+            onClick={async () => {
+              try {
+                console.log(images);
+                const res = await (!isEditMode
+                  ? createPI(lieu, images)
+                  : updatePI(searchParams.get("id"), lieu, images));
+                console.log(res);
+              } catch (e) {
+                console.error(e);
+              }
+            }}
+          >
             Add{" "}
           </div>
-          <div className="border rounded-3xl px-8  my-8 py-3 text-white bg-orange-400 inline-block text-center font-semibold hover:scale-110">
+          <div
+            className="border rounded-3xl px-8  my-8 py-3 text-white bg-orange-400 inline-block text-center font-semibold hover:scale-110"
+            onClick={() => console.log(lieu)}
+          >
             Cancel{" "}
           </div>
         </div>
